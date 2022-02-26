@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <div class="main-container">
+        <span class="heading">Login</span>
+        <form class="login-form" action="{% url 'user.login' %}" method="post">
+            {% csrf_token %}
+            {{ login_form.as_p }}
+            <button type="submit" class="login-button">Log in</button>
+        </form>
+    </div>
+
+</body>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+        body{
+        font-family: 'Roboto', sans-serif;
+        background: #f8f8f8;
+        margin: 0px;
+        padding: 0px;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main-container{
+        border: 1px solid black;
+        width: 30%;
+        display: flex;
+        flex-wrap: wrap;
+        position: relative;
+        left: 35%;
+        top: 7rem;
+        min-height: 100%;
+        background-color: #ffffff;
+        border-color: #cccccc;
+        border-radius: 5px;
+    }
+
+    .heading{
+        width: 100%;
+        text-align: center;
+        font-size: 2rem;
+        font-weight:lighter;
+        color: rgb(255, 255, 255);
+        padding: 1rem;
+        background-color: #417690;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .login-form{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 1rem;
+    }
+
+    label{
+        width: 90%;
+        position: relative;
+        left: 5%;
+        margin: 1rem 0rem 0rem 0rem;
+        box-sizing: border-box;
+    }
+
+    input{
+        width: 90%;
+        border-color: #cccccc;
+        border-radius: 5px;
+        position: relative;
+        left: 5%;
+        box-sizing: border-box;
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+    }
+
+    .login-button{
+        text-decoration: none;
+        width: 5rem;
+        height: 2.5rem;
+        text-align: center;
+        font-size: 1.25rem;
+        font-weight: 600;
+        cursor: pointer;
+        color: black;
+        border-radius: 5px;
+        border: 1px solid #79AEC8;
+        background-color: #79AEC8;
+        position: relative;
+        left: 40%;
+        margin-bottom: 0.5rem;
+    }
+
+    .login-button:hover{
+        border: 1px solid #417690;
+        background-color: #417690;
+        color: white;
+    } 
+
+</style>
+
+
+</html>
