@@ -116,6 +116,6 @@ def send_data_to_cart(request, cart_id):
                     cart = Cart(key=product_values['key'], cart_id=product_values['cart_id'], product_id=product_values['product_id'], product_count=count)
                     cart.save()
         return JsonResponse(list(Cart.objects.filter(cart_id=cart_id).values()), safe=False)
-    return JsonResponse(list(Products.objects.all().values()), safe=False)
+    return JsonResponse([list(Products.objects.all().values()), list(Cart.objects.filter(cart_id=cart_id).values())], safe=False)
 
 

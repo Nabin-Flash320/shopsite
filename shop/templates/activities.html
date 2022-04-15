@@ -9,6 +9,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <body class="p-2 m-3">    
     <div id="app">
         <div class="parent d-flex flex-column align-items-center">
@@ -66,7 +67,49 @@
                             <td class="product_cost" scope="col">[[ productDetails[product_id-1].product_price * count ]]</td>
                         </tr>
                     </table>
-                    <button class="complete btn btn-primary" role="button" @click="verify_completion(id)">Completed</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#exampleModalToggle${id}`" @click="display_QR(id)">Completed</button>
+                    <!--Modal start-->
+
+                    <div class="modal fade" :id="`exampleModalToggle${id}`" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalToggleLabel">Application QR code</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" v-if="taskStatus[id]">
+                                    <span>'Cart [[id]]' completed the transaction. Scan the QR code below.</span>
+                                    <div id="qrcode">qrcode</div>
+                                </div>
+                                <div class="modal-body" v-else>
+                                    <span>'Cart [[id]]' hasn't notified the completion of shopping!!</span>
+                                </div>
+                                <div class="modal-footer">
+                                    <button v-if="taskStatus[id]" class="btn btn-primary" :data-bs-target="`#secondexampleModalToggle${id}`" data-bs-toggle="modal" data-bs-dismiss="modal">Go to verify</button>
+                                    <button v-else class="btn btn-primary" data-bs-dismiss="modal">Okz</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" :id="`secondexampleModalToggle${id}`" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalToggleLabel2">Shopping complete verification</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Click below to verify the completion of shopping.
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary" data-bs-dismiss="modal" @click="verify_completion(id)">Verify</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Modal end-->
+
                 </div>
         </div>
     </div>
@@ -82,6 +125,10 @@
                 cartDetails:{},
                 productDetails:{},
                 taskStatus:{},
+                details: {
+                    "Account Name": "major project",
+                    "Account Number": 123456789101112
+                }
             }
         },
         methods:{
@@ -96,17 +143,26 @@
             pollData(){
                 setInterval(this.setData, 2000);
             },
+            display_QR(id){
+                var qrc = document.getElementById('qrcode')
+                if(qrc==null){
+                    return
+                }
+                qrc.innerHTML = ""
+                var qr = new QRCode(qrc, JSON.stringify(this.details))
+            },
             verify_completion(id){
                 if(this.taskStatus[id]){
                     console.log(this.taskStatus[id])
                     axios.post(String(id)+'/verify-completion').then(response=>{
                         if(response.data.verified){
-                            alert('Cart ' + id +' completed the transaction.\n Click \'OK\' to proceed!!');
+                            console.log('Cart ' + id +' completed the transaction.\n Click \'OK\' to proceed!!');
                         }
                     });
                 }else{
-                    alert('User haven\'t notified the completion of shopping!!')
+                    console.log('User haven\'t notified the completion of shopping!!')
                 }
+                
             }
         },
         beforeMount(){
